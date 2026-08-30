@@ -21,7 +21,7 @@ function InteractiveBlossom({ left, top, size, depth, pointerX, pointerY }: { le
   return <motion.span className="interactive-blossom" style={{ left: `${left}%`, top: `${top}%`, width: `${34 * size}px`, height: `${34 * size}px`, x, y, rotate, scale }}><i /><i /><i /><i /><i /><b /></motion.span>;
 }
 
-export function CinematicBackdrop() {
+export function CinematicBackdrop({ activeScene }: { activeScene: string }) {
   const { scrollYProgress } = useScroll();
   const reduced = useReducedMotion();
   const pointerX = useSpring(useMotionValue(0), { stiffness: 80, damping: 22, mass: 0.7 });
@@ -44,7 +44,7 @@ export function CinematicBackdrop() {
   }, [pointerX, pointerY, reduced]);
 
   return (
-    <div className="cinematic-backdrop" aria-hidden="true">
+    <div className={`cinematic-backdrop cinematic-backdrop--${activeScene}`} aria-hidden="true">
       <motion.div className="backdrop-zoom" style={{ scale: zoom }}>
         <motion.div className="moon-world" style={{ x: moonX }}>
           <div className="moon-glow" />
