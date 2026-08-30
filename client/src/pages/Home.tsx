@@ -77,7 +77,7 @@ export default function Home() {
   const nextScene = scenes[sceneIndex + 1];
 
   return <main className={`experience-shell ${traveling ? "is-traveling" : ""}`}>
-    <div className="branch-travel" aria-hidden="true"><span className="branch-travel-line" /><i className="branch-travel-leaf branch-travel-leaf--one" /><i className="branch-travel-leaf branch-travel-leaf--two" /><b className="branch-travel-bloom" /></div>
+    <div className="branch-travel" aria-hidden="true"><span className="branch-travel-line" /><span className="branch-travel-twig branch-travel-twig--one" /><span className="branch-travel-twig branch-travel-twig--two" /><span className="branch-travel-twig branch-travel-twig--three" /><i className="branch-travel-leaf branch-travel-leaf--one" /><i className="branch-travel-leaf branch-travel-leaf--two" /><b className="branch-travel-bloom" /></div>
     <CinematicBackdrop activeScene={activeScene} isTraveling={traveling} />
     <ParticleField density="high" />
     <StoryNav activeScene={activeScene} open={menuOpen} setOpen={setMenuOpen} soundEnabled={sound.enabled} onSoundToggle={sound.toggle} />
