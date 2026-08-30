@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
@@ -22,16 +22,19 @@ function InteractiveBlossom({ left, top, size, depth, pointerX, pointerY }: { le
 }
 
 export function CinematicBackdrop({ activeScene, isTraveling = false }: { activeScene: string; isTraveling?: boolean }) {
-  const { scrollYProgress } = useScroll();
+  const sceneProgress = ["entry", "date", "reasons", "built", "letter", "pre", "celebration", "ending"].indexOf(activeScene) / 7;
+  const journeyProgress = useMotionValue(Math.max(0, sceneProgress));
   const reduced = useReducedMotion();
   const pointerX = useSpring(useMotionValue(0), { stiffness: 80, damping: 22, mass: 0.7 });
   const pointerY = useSpring(useMotionValue(0), { stiffness: 80, damping: 22, mass: 0.7 });
-  const zoom = useTransform(scrollYProgress, [0, 0.16, 0.35, 0.56, 0.76, 1], [1, 1.06, 1.14, 1.28, 1.46, 1.7]);
-  const moonX = useTransform(scrollYProgress, [0, 0.5, 1], [0, -42, -92]);
-  const treeX = useTransform(scrollYProgress, [0, 0.5, 1], [0, 22, 55]);
-  const hazeOpacity = useTransform(scrollYProgress, [0, 0.25, 0.62, 1], [0.45, 0.8, 0.66, 0.38]);
-  const roadY = useTransform(scrollYProgress, [0, 1], [0, -160]);
-  const roadScale = useTransform(scrollYProgress, [0, 0.45, 1], [1, 1.12, 1.32]);
+  const zoom = useTransform(journeyProgress, [0, 0.16, 0.35, 0.56, 0.76, 1], [1, 1.06, 1.14, 1.28, 1.46, 1.7]);
+  const moonX = useTransform(journeyProgress, [0, 0.5, 1], [0, -42, -92]);
+  const treeX = useTransform(journeyProgress, [0, 0.5, 1], [0, 22, 55]);
+  const hazeOpacity = useTransform(journeyProgress, [0, 0.25, 0.62, 1], [0.45, 0.8, 0.66, 0.38]);
+  const roadY = useTransform(journeyProgress, [0, 1], [0, -160]);
+  const roadScale = useTransform(journeyProgress, [0, 0.45, 1], [1, 1.12, 1.32]);
+
+  useEffect(() => { journeyProgress.set(Math.max(0, sceneProgress)); }, [journeyProgress, sceneProgress]);
 
   useEffect(() => {
     if (reduced) return;
@@ -54,14 +57,23 @@ export function CinematicBackdrop({ activeScene, isTraveling = false }: { active
           <div className="travel-roadside travel-roadside--left"><i /><i /><i /></div>
           <div className="travel-roadside travel-roadside--right"><i /><i /><i /></div>
         </motion.div>
+        <motion.svg className="pink-tree" style={{ x: treeX }} viewBox="0 0 420 620" preserveAspectRatio="xMidYMax meet">
+          <defs><linearGradient id="pinkTreeTrunk" x1="0" x2="1"><stop offset="0" stopColor="#382044" /><stop offset=".7" stopColor="#86435f" /><stop offset="1" stopColor="#c06f88" /></linearGradient><radialGradient id="pinkTreeCanopy"><stop offset="0" stopColor="#efb5ae" stopOpacity=".72" /><stop offset="1" stopColor="#8c456d" stopOpacity=".16" /></radialGradient></defs>
+          <path d="M205 630 C188 530 194 432 212 346 C228 272 201 216 143 166" fill="none" stroke="url(#pinkTreeTrunk)" strokeWidth="50" strokeLinecap="round" />
+          <path d="M210 364 C270 312 311 260 337 188 M201 425 C150 371 99 336 42 324 M207 328 C177 272 177 221 193 151" fill="none" stroke="#b4627e" strokeWidth="23" strokeLinecap="round" opacity=".98" />
+          <g className="pink-tree-canopy"><circle cx="96" cy="146" r="82" fill="url(#pinkTreeCanopy)" /><circle cx="188" cy="104" r="103" fill="url(#pinkTreeCanopy)" /><circle cx="298" cy="133" r="98" fill="url(#pinkTreeCanopy)" /><circle cx="350" cy="211" r="62" fill="url(#pinkTreeCanopy)" />
+            <circle cx="54" cy="132" r="18" fill="#e996a3" /><circle cx="112" cy="85" r="22" fill="#f2b7ac" /><circle cx="173" cy="143" r="16" fill="#e38fa0" /><circle cx="221" cy="66" r="20" fill="#f0b5ac" /><circle cx="283" cy="112" r="24" fill="#e997a3" /><circle cx="343" cy="148" r="17" fill="#f2bfac" /><circle cx="316" cy="220" r="19" fill="#df8c9c" /><circle cx="104" cy="196" r="15" fill="#f3c3ae" />
+            <circle cx="54" cy="132" r="5" fill="#f4d391" /><circle cx="112" cy="85" r="5" fill="#f4d391" /><circle cx="221" cy="66" r="5" fill="#f4d391" /><circle cx="283" cy="112" r="5" fill="#f4d391" /></g>
+        </motion.svg>
         <motion.div className="moon-world" style={{ x: moonX }}>
           <div className="moon-glow" />
           <div className="moon-disc"><span className="moon-crater moon-crater--one" /><span className="moon-crater moon-crater--two" /><span className="moon-crater moon-crater--three" /></div>
           <div className="moon-ring" />
         </motion.div>
         <motion.svg className="blossom-tree" style={{ x: treeX }} viewBox="0 0 900 900" preserveAspectRatio="xMidYMax meet">
-          <defs><linearGradient id="branchGradient" x1="0" x2="1"><stop offset="0" stopColor="#090b12" /><stop offset=".7" stopColor="#17162b" /><stop offset="1" stopColor="#3a2c48" /></linearGradient></defs>
-          <path d="M-60 910 C40 760 75 655 112 480 C133 378 187 269 319 222 C407 190 481 143 540 45" fill="none" stroke="url(#branchGradient)" strokeWidth="32" strokeLinecap="round" />
+          <defs><linearGradient id="branchGradient" x1="0" x2="1"><stop offset="0" stopColor="#151122" /><stop offset=".7" stopColor="#382442" /><stop offset="1" stopColor="#72405b" /></linearGradient></defs>
+          <path d="M-60 910 C40 760 75 655 112 480 C133 378 187 269 319 222 C407 190 481 143 540 45" fill="none" stroke="url(#branchGradient)" strokeWidth="42" strokeLinecap="round" />
+          <path d="M56 900 C118 748 140 606 153 472 C166 338 260 244 389 190" fill="none" stroke="#59334f" strokeWidth="22" strokeLinecap="round" opacity=".98" />
           <path d="M83 665 C167 600 238 567 339 551 C440 535 526 466 587 371" fill="none" stroke="url(#branchGradient)" strokeWidth="18" strokeLinecap="round" />
           <path d="M125 489 C233 440 306 379 375 282" fill="none" stroke="url(#branchGradient)" strokeWidth="14" strokeLinecap="round" />
           <path d="M226 577 C283 492 323 442 416 410" fill="none" stroke="url(#branchGradient)" strokeWidth="10" strokeLinecap="round" />
@@ -69,6 +81,11 @@ export function CinematicBackdrop({ activeScene, isTraveling = false }: { active
           <path d="M376 283 C440 276 511 293 604 341" fill="none" stroke="url(#branchGradient)" strokeWidth="9" strokeLinecap="round" />
           <path d="M485 170 C578 175 664 214 746 285" fill="none" stroke="url(#branchGradient)" strokeWidth="13" strokeLinecap="round" />
           <path d="M540 45 C623 67 696 122 783 209" fill="none" stroke="url(#branchGradient)" strokeWidth="10" strokeLinecap="round" />
+          <g className="tree-canopy">
+            <circle cx="255" cy="132" r="78" fill="#6b3d64" opacity=".38" /><circle cx="355" cy="104" r="104" fill="#744261" opacity=".34" /><circle cx="470" cy="126" r="92" fill="#63385d" opacity=".38" />
+            <circle cx="215" cy="155" r="16" fill="#f0b1ad" /><circle cx="274" cy="101" r="13" fill="#e996a3" /><circle cx="335" cy="146" r="18" fill="#f3c1ac" /><circle cx="399" cy="88" r="15" fill="#eaa1ad" /><circle cx="472" cy="150" r="19" fill="#f0b3aa" /><circle cx="530" cy="112" r="13" fill="#df8e9f" />
+            <circle cx="255" cy="132" r="5" fill="#f4d391" /><circle cx="355" cy="104" r="5" fill="#f4d391" /><circle cx="470" cy="126" r="5" fill="#f4d391" />
+          </g>
           {blossoms.map(([cx, cy, scale], index) => <g key={index} transform={`translate(${cx * 8.8} ${cy * 8.8}) scale(${scale})`}><circle r="11" fill="#d7969e" opacity=".82" /><circle cx="13" cy="-5" r="9" fill="#e5b0a7" opacity=".78" /><circle cx="7" cy="12" r="8" fill="#c98999" opacity=".72" /><circle cx="-9" cy="9" r="7" fill="#efc1ae" opacity=".6" /><circle r="3.5" fill="#f3d595" /></g>)}
         </motion.svg>
         <div className="interactive-blossom-layer">
