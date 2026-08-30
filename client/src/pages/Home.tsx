@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ChevronUp, Menu, X } from "lucide-react";
 import { birthdayConfig } from "@/config/birthdayConfig";
 import { ParticleField } from "@/components/ParticleField";
+import { CinematicBackdrop } from "@/components/CinematicBackdrop";
 import { MusicToggle } from "@/components/MusicToggle";
 import { BirthdayCelebration, CelebrateYou, CreatedForYou, DigitalLetter, PreCelebration, QuietEnding, SecretEntry, SpecialDate } from "@/components/Scenes";
 import { useCountdown } from "@/hooks/useCountdown";
@@ -72,6 +73,7 @@ export default function Home() {
   const reset = () => { setWished(false); setUnlocked(false); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
 
   return <main className="experience-shell">
+    <CinematicBackdrop />
     <ParticleField density="high" />
     <StoryNav activeScene={activeScene} open={menuOpen} setOpen={setMenuOpen} soundEnabled={sound.enabled} onSoundToggle={sound.toggle} />
     <div className="progress-rail" aria-label="Story progress">{scenes.map(([id]) => <button key={id} className={activeScene === id ? "is-active" : ""} onClick={() => scrollToScene(id)} type="button" aria-label={`Go to ${id} section`} />)}</div>
