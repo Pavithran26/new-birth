@@ -1,10 +1,10 @@
 export const birthdayConfig = {
-  recipientName: "you",
+  recipientName: "Someone🦜",
   birthday: {
     day: 9,
     month: 9,
   },
-  senderName: "someone who genuinely wishes you happiness",
+  senderName: "Pavithran S",
   finalMessage: "Made especially for you",
   musicEnabled: false,
 };
