@@ -20,7 +20,7 @@ const scenes = [
 ] as const;
 
 function scrollToScene(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  window.dispatchEvent(new CustomEvent("birthday:navigate", { detail: id }));
 }
 
 function ConfettiBurst() {
@@ -56,24 +56,29 @@ export default function Home() {
   const [activeScene, setActiveScene] = useState("entry");
   const [wished, setWished] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
+  const [traveling, setTraveling] = useState(false);
 
   useEffect(() => {
-    const updateActiveScene = () => {
-      const index = Math.min(scenes.length - 1, Math.max(0, Math.floor((window.scrollY + window.innerHeight * 0.18) / Math.max(1, window.innerHeight))));
-      setActiveScene(scenes[index][0]);
+    const navigate = (event: Event) => {
+      const id = (event as CustomEvent<string>).detail;
+      if (!scenes.some(([sceneId]) => sceneId === id) || id === activeScene) return;
+      setTraveling(true);
+      window.setTimeout(() => { setActiveScene(id); setTraveling(false); window.scrollTo({ top: 0, behavior: "auto" }); }, 420);
     };
-    updateActiveScene();
-    window.addEventListener("scroll", updateActiveScene, { passive: true });
-    window.addEventListener("resize", updateActiveScene);
-    return () => { window.removeEventListener("scroll", updateActiveScene); window.removeEventListener("resize", updateActiveScene); };
-  }, []);
+    window.addEventListener("birthday:navigate", navigate);
+    return () => window.removeEventListener("birthday:navigate", navigate);
+  }, [activeScene]);
 
   const openStory = () => { setUnlocked(true); window.setTimeout(() => scrollToScene("date"), 120); };
   const openCelebration = () => scrollToScene("celebration");
-  const reset = () => { setWished(false); setUnlocked(false); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const reset = () => { setWished(false); setUnlocked(false); setMenuOpen(false); setTraveling(false); setActiveScene("entry"); };
 
-  return <main className="experience-shell">
-    <CinematicBackdrop activeScene={activeScene} />
+  const sceneIndex = scenes.findIndex(([id]) => id === activeScene);
+  const nextScene = scenes[sceneIndex + 1];
+
+  return <main className={`experience-shell ${traveling ? "is-traveling" : ""}`}>
+    <div className="branch-travel" aria-hidden="true"><span className="branch-travel-line" /><i className="branch-travel-leaf branch-travel-leaf--one" /><i className="branch-travel-leaf branch-travel-leaf--two" /><b className="branch-travel-bloom" /></div>
+    <CinematicBackdrop activeScene={activeScene} isTraveling={traveling} />
     <ParticleField density="high" />
     <StoryNav activeScene={activeScene} open={menuOpen} setOpen={setMenuOpen} soundEnabled={sound.enabled} onSoundToggle={sound.toggle} />
     <div className="progress-rail" aria-label="Story progress">{scenes.map(([id]) => <button key={id} className={activeScene === id ? "is-active" : ""} onClick={() => scrollToScene(id)} type="button" aria-label={`Go to ${id} section`} />)}</div>
@@ -87,6 +92,7 @@ export default function Home() {
       <div id="celebration"><BirthdayCelebration wished={wished} onWish={() => setWished(true)} onNext={() => scrollToScene("ending")} />{wished && <ConfettiBurst />}</div>
       <div id="ending"><QuietEnding onAgain={reset} /></div>
     </div>
+    {nextScene && (activeScene !== "entry" || unlocked) && <button className="leaf-next" type="button" onClick={() => scrollToScene(nextScene[0])} aria-label={`Follow the branch to ${nextScene[1]}`}><span className="leaf-next-art"><i /><i /><i /><b /></span><span className="leaf-next-copy"><small>Follow the branch</small><strong>{nextScene[1]}</strong></span><ChevronUp size={15} /></button>}
     <div className="bottom-sound"><MusicToggle enabled={sound.enabled} onToggle={sound.toggle} /></div>
     <button className="back-to-top" onClick={() => scrollToScene("entry")} type="button" aria-label="Back to the beginning"><ChevronUp size={16} /></button>
   </main>;

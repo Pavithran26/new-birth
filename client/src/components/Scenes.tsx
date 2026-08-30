@@ -28,7 +28,7 @@ export function SecretEntry({ onOpen }: { onOpen: () => void }) {
           <span className="button-glow" /><Sparkles size={16} />Open your surprise<ArrowRight size={16} />
         </motion.button>
       </div>
-      <div className="entry-footer"><span>Scroll at your own pace</span><ArrowDown size={16} /></div>
+      <div className="entry-footer"><span>Follow the branch</span><ArrowRight size={16} /></div>
     </section>
   );
 }

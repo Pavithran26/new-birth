@@ -21,7 +21,7 @@ function InteractiveBlossom({ left, top, size, depth, pointerX, pointerY }: { le
   return <motion.span className="interactive-blossom" style={{ left: `${left}%`, top: `${top}%`, width: `${34 * size}px`, height: `${34 * size}px`, x, y, rotate, scale }}><i /><i /><i /><i /><i /><b /></motion.span>;
 }
 
-export function CinematicBackdrop({ activeScene }: { activeScene: string }) {
+export function CinematicBackdrop({ activeScene, isTraveling = false }: { activeScene: string; isTraveling?: boolean }) {
   const { scrollYProgress } = useScroll();
   const reduced = useReducedMotion();
   const pointerX = useSpring(useMotionValue(0), { stiffness: 80, damping: 22, mass: 0.7 });
@@ -46,7 +46,7 @@ export function CinematicBackdrop({ activeScene }: { activeScene: string }) {
   }, [pointerX, pointerY, reduced]);
 
   return (
-    <div className={`cinematic-backdrop cinematic-backdrop--${activeScene}`} aria-hidden="true">
+    <div className={`cinematic-backdrop cinematic-backdrop--${activeScene} ${isTraveling ? "cinematic-backdrop--traveling" : ""}`} aria-hidden="true">
       <motion.div className="backdrop-zoom" style={{ scale: zoom }}>
         <motion.div className="travel-world" style={{ y: roadY, scale: roadScale }}>
           <div className="travel-horizon" />
@@ -76,7 +76,7 @@ export function CinematicBackdrop({ activeScene }: { activeScene: string }) {
         </div>
       </motion.div>
       <motion.div className="backdrop-haze" style={{ opacity: hazeOpacity }} />
-      <div className="explore-badge"><span className="explore-line" />Scroll to explore<span className="explore-line" /></div>
+      <div className="explore-badge"><span className="explore-line" />Follow the branch<span className="explore-line" /></div>
     </div>
   );
 }
