@@ -30,6 +30,8 @@ export function CinematicBackdrop({ activeScene }: { activeScene: string }) {
   const moonX = useTransform(scrollYProgress, [0, 0.5, 1], [0, -42, -92]);
   const treeX = useTransform(scrollYProgress, [0, 0.5, 1], [0, 22, 55]);
   const hazeOpacity = useTransform(scrollYProgress, [0, 0.25, 0.62, 1], [0.45, 0.8, 0.66, 0.38]);
+  const roadY = useTransform(scrollYProgress, [0, 1], [0, -160]);
+  const roadScale = useTransform(scrollYProgress, [0, 0.45, 1], [1, 1.12, 1.32]);
 
   useEffect(() => {
     if (reduced) return;
@@ -46,6 +48,12 @@ export function CinematicBackdrop({ activeScene }: { activeScene: string }) {
   return (
     <div className={`cinematic-backdrop cinematic-backdrop--${activeScene}`} aria-hidden="true">
       <motion.div className="backdrop-zoom" style={{ scale: zoom }}>
+        <motion.div className="travel-world" style={{ y: roadY, scale: roadScale }}>
+          <div className="travel-horizon" />
+          <div className="travel-road"><span /><span /><span /><span /><span /></div>
+          <div className="travel-roadside travel-roadside--left"><i /><i /><i /></div>
+          <div className="travel-roadside travel-roadside--right"><i /><i /><i /></div>
+        </motion.div>
         <motion.div className="moon-world" style={{ x: moonX }}>
           <div className="moon-glow" />
           <div className="moon-disc"><span className="moon-crater moon-crater--one" /><span className="moon-crater moon-crater--two" /><span className="moon-crater moon-crater--three" /></div>
