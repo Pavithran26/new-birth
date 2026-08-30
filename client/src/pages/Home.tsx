@@ -58,14 +58,14 @@ export default function Home() {
   const [unlocked, setUnlocked] = useState(false);
 
   useEffect(() => {
-    const observers = scenes.map(([id]) => {
-      const element = document.getElementById(id);
-      if (!element) return null;
-      const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setActiveScene(id); }, { threshold: 0.38 });
-      observer.observe(element);
-      return observer;
-    });
-    return () => observers.forEach((observer) => observer?.disconnect());
+    const updateActiveScene = () => {
+      const index = Math.min(scenes.length - 1, Math.max(0, Math.floor((window.scrollY + window.innerHeight * 0.18) / Math.max(1, window.innerHeight))));
+      setActiveScene(scenes[index][0]);
+    };
+    updateActiveScene();
+    window.addEventListener("scroll", updateActiveScene, { passive: true });
+    window.addEventListener("resize", updateActiveScene);
+    return () => { window.removeEventListener("scroll", updateActiveScene); window.removeEventListener("resize", updateActiveScene); };
   }, []);
 
   const openStory = () => { setUnlocked(true); window.setTimeout(() => scrollToScene("date"), 120); };
@@ -77,7 +77,7 @@ export default function Home() {
     <ParticleField density="high" />
     <StoryNav activeScene={activeScene} open={menuOpen} setOpen={setMenuOpen} soundEnabled={sound.enabled} onSoundToggle={sound.toggle} />
     <div className="progress-rail" aria-label="Story progress">{scenes.map(([id]) => <button key={id} className={activeScene === id ? "is-active" : ""} onClick={() => scrollToScene(id)} type="button" aria-label={`Go to ${id} section`} />)}</div>
-    <div className={`journey ${unlocked ? "journey--unlocked" : ""}`}>
+    <div className={`journey journey--${activeScene} ${unlocked ? "journey--unlocked" : ""}`}>
       <div id="entry"><SecretEntry onOpen={openStory} /></div>
       <div id="date"><SpecialDate countdown={countdown} onNext={() => scrollToScene("reasons")} /></div>
       <div id="reasons"><CelebrateYou onNext={() => scrollToScene("built")} /></div>

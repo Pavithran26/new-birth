@@ -9,7 +9,7 @@ body { margin: 0; min-width: 320px; min-height: 100vh; overflow-x: hidden; backg
 button { font: inherit; }
 button:focus-visible { outline: 1px solid #e8c982; outline-offset: 5px; }
 
-.experience-shell { --ink: #f7f4ed; --muted: #a4a7b5; --faint: #656a7d; --gold: #d6b56a; --rose: #d99a9b; --purple: #a8a0dd; position: relative; isolation: isolate; overflow: hidden; background: #070912; }
+.experience-shell { --ink: #f7f4ed; --muted: #a4a7b5; --faint: #656a7d; --gold: #d6b56a; --rose: #d99a9b; --purple: #a8a0dd; position: relative; isolation: isolate; overflow: clip; background: #070912; }
 .cinematic-backdrop { position: fixed; z-index: -2; inset: 0; overflow: hidden; pointer-events: none; }
 .backdrop-zoom { position: absolute; inset: -13%; transform-origin: 50% 48%; }
 .moon-world { position: absolute; top: 8%; right: 13%; width: min(34vw, 470px); aspect-ratio: 1; }
@@ -50,7 +50,11 @@ button:focus-visible { outline: 1px solid #e8c982; outline-offset: 5px; }
 .back-to-top { position: fixed; z-index: 20; right: clamp(20px, 5vw, 72px); bottom: 26px; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; color: var(--muted); background: rgba(7,9,18,.6); cursor: pointer; transition: color .2s ease, border-color .2s ease, transform .2s ease; }
 .back-to-top:hover { border-color: rgba(214,181,106,.7); color: var(--gold); transform: translateY(-2px); }
 
-.journey > div { scroll-margin-top: 0; }
+.journey { position: relative; min-height: 800svh; }
+.journey > div { position: sticky; top: 0; height: 100svh; scroll-margin-top: 0; opacity: 0; pointer-events: none; transform: scale(.985); transition: opacity .55s ease, transform .75s cubic-bezier(.23,1,.32,1); }
+.journey--entry > div:nth-child(1), .journey--date > div:nth-child(2), .journey--reasons > div:nth-child(3), .journey--built > div:nth-child(4), .journey--letter > div:nth-child(5), .journey--pre > div:nth-child(6), .journey--celebration > div:nth-child(7), .journey--ending > div:nth-child(8) { opacity: 1; pointer-events: auto; transform: scale(1); }
+.journey > div:nth-child(1) { z-index: 1; }.journey > div:nth-child(2) { z-index: 2; }.journey > div:nth-child(3) { z-index: 3; }.journey > div:nth-child(4) { z-index: 4; }.journey > div:nth-child(5) { z-index: 5; }.journey > div:nth-child(6) { z-index: 6; }.journey > div:nth-child(7) { z-index: 7; }.journey > div:nth-child(8) { z-index: 8; }
+.journey > div::after { position: absolute; z-index: 10; right: clamp(24px, 8vw, 120px); bottom: 21px; left: clamp(24px, 8vw, 120px); height: 1px; content: ''; background: linear-gradient(90deg, transparent, rgba(214,181,106,.17), transparent); opacity: .6; }
 .scene { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100svh; padding: 120px clamp(24px, 8vw, 120px) 90px; overflow: hidden; }
 .scene > * { position: relative; z-index: 1; }
 .scene::before { position: absolute; z-index: 0; content: ''; pointer-events: none; }
