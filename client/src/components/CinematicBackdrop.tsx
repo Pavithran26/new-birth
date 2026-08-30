@@ -1,16 +1,47 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { useEffect } from "react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const blossoms = [
   [16, 21, 1], [25, 30, 0.75], [34, 17, 0.9], [43, 25, 0.65], [53, 12, 0.8], [61, 27, 0.72], [70, 18, 0.88], [78, 32, 0.62], [87, 23, 0.82],
   [21, 42, 0.58], [38, 38, 0.6], [58, 43, 0.55], [76, 45, 0.56],
 ];
 
+const interactiveBlossoms = [
+  [13, 45, 0.7, 1], [19, 57, 0.5, 0.7], [27, 49, 0.8, 1.2], [34, 39, 0.55, 0.8],
+  [43, 31, 0.72, 1.4], [53, 38, 0.5, 0.8], [63, 29, 0.8, 1.1], [72, 41, 0.55, 0.9],
+  [81, 34, 0.7, 1.25], [89, 49, 0.48, 0.7], [30, 64, 0.45, 1], [58, 56, 0.6, 0.9],
+];
+
+function InteractiveBlossom({ left, top, size, depth, pointerX, pointerY }: { left: number; top: number; size: number; depth: number; pointerX: ReturnType<typeof useMotionValue<number>>; pointerY: ReturnType<typeof useMotionValue<number>> }) {
+  const x = useTransform(pointerX, [-1, 1], [-14 * depth, 14 * depth]);
+  const y = useTransform(pointerY, [-1, 1], [-10 * depth, 10 * depth]);
+  const rotate = useTransform(pointerX, [-1, 1], [-10 * depth, 10 * depth]);
+  const scale = useTransform(pointerY, [-1, 1], [0.92, 1.08]);
+  return <motion.span className="interactive-blossom" style={{ left: `${left}%`, top: `${top}%`, width: `${34 * size}px`, height: `${34 * size}px`, x, y, rotate, scale }}><i /><i /><i /><i /><i /><b /></motion.span>;
+}
+
 export function CinematicBackdrop() {
   const { scrollYProgress } = useScroll();
+  const reduced = useReducedMotion();
+  const pointerX = useSpring(useMotionValue(0), { stiffness: 80, damping: 22, mass: 0.7 });
+  const pointerY = useSpring(useMotionValue(0), { stiffness: 80, damping: 22, mass: 0.7 });
   const zoom = useTransform(scrollYProgress, [0, 0.16, 0.35, 0.56, 0.76, 1], [1, 1.06, 1.14, 1.28, 1.46, 1.7]);
   const moonX = useTransform(scrollYProgress, [0, 0.5, 1], [0, -42, -92]);
   const treeX = useTransform(scrollYProgress, [0, 0.5, 1], [0, 22, 55]);
   const hazeOpacity = useTransform(scrollYProgress, [0, 0.25, 0.62, 1], [0.45, 0.8, 0.66, 0.38]);
+
+  useEffect(() => {
+    if (reduced) return;
+    const move = (event: PointerEvent) => {
+      pointerX.set((event.clientX / window.innerWidth - 0.5) * 2);
+      pointerY.set((event.clientY / window.innerHeight - 0.5) * 2);
+    };
+    const settle = () => { pointerX.set(0); pointerY.set(0); };
+    window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointerup", settle, { passive: true });
+    return () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", settle); };
+  }, [pointerX, pointerY, reduced]);
 
   return (
     <div className="cinematic-backdrop" aria-hidden="true">
@@ -32,6 +63,9 @@ export function CinematicBackdrop() {
           <path d="M540 45 C623 67 696 122 783 209" fill="none" stroke="url(#branchGradient)" strokeWidth="10" strokeLinecap="round" />
           {blossoms.map(([cx, cy, scale], index) => <g key={index} transform={`translate(${cx * 8.8} ${cy * 8.8}) scale(${scale})`}><circle r="11" fill="#d7969e" opacity=".82" /><circle cx="13" cy="-5" r="9" fill="#e5b0a7" opacity=".78" /><circle cx="7" cy="12" r="8" fill="#c98999" opacity=".72" /><circle cx="-9" cy="9" r="7" fill="#efc1ae" opacity=".6" /><circle r="3.5" fill="#f3d595" /></g>)}
         </motion.svg>
+        <div className="interactive-blossom-layer">
+          {interactiveBlossoms.map(([left, top, size, depth], index) => <InteractiveBlossom key={index} left={left} top={top} size={size} depth={depth} pointerX={pointerX} pointerY={pointerY} />)}
+        </div>
       </motion.div>
       <motion.div className="backdrop-haze" style={{ opacity: hazeOpacity }} />
       <div className="explore-badge"><span className="explore-line" />Scroll to explore<span className="explore-line" /></div>
