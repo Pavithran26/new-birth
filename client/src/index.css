@@ -174,6 +174,11 @@ button:focus-visible { outline: 1px solid #e8c982; outline-offset: 5px; }
   .bottom-sound { display: none; }
 }
 
+.reveal-button { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 10px 14px; border: 1px solid rgba(217,154,155,.28); border-radius: 999px; color: #c8aeb0; background: rgba(217,154,155,.045); font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: color .2s ease, border-color .2s ease, background .2s ease; }
+.reveal-button:hover { border-color: rgba(217,154,155,.7); color: #f0c4bc; background: rgba(217,154,155,.1); }
+.reveal-button svg { color: var(--rose); }
+.hidden-message { max-width: 380px; margin: 24px auto 0; color: #e7c9b5; font-family: 'DM Serif Display', serif; font-size: clamp(20px, 2.5vw, 27px); font-style: italic; line-height: 1.25; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }

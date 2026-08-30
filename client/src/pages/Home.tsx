@@ -51,7 +51,7 @@ function StoryNav({ activeScene, open, setOpen, soundEnabled, onSoundToggle }: {
 
 export default function Home() {
   const countdown = useCountdown(birthdayConfig.birthday.day, birthdayConfig.birthday.month);
-  const sound = useSound(birthdayConfig.musicEnabled);
+  const sound = useSound(birthdayConfig.musicEnabled, birthdayConfig.musicSrc);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeScene, setActiveScene] = useState("entry");
   const [wished, setWished] = useState(false);

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { ArrowDown, ArrowRight, CalendarDays, ChevronDown, Code2, Gift, Heart, Moon, Sparkles, Sun, WandSparkles } from "lucide-react";
 import { birthdayConfig } from "@/config/birthdayConfig";
 import { Cake } from "@/components/Cake";
@@ -132,11 +133,13 @@ export function BirthdayCelebration({ wished, onWish, onNext }: { wished: boolea
 }
 
 export function QuietEnding({ onAgain }: { onAgain: () => void }) {
+  const [revealed, setRevealed] = useState(false);
   return (
     <section className="scene scene-ending" aria-labelledby="ending-title">
       <div className="ending-constellation" aria-hidden="true"><span /><span /><span /><span /><span /><i /></div>
-      <div className="ending-copy"><SceneLabel number="07" label="One last thing" /><p>Some people receive gifts.</p><h2 id="ending-title">You became the reason<br />someone created one.</h2><div className="ending-rule" /><p className="ending-final">{birthdayConfig.finalMessage}.</p><Heart className="ending-heart" size={18} strokeWidth={1.2} /></div>
+      <div className="ending-copy"><SceneLabel number="07" label="One last thing" /><p>Some people receive gifts.</p><h2 id="ending-title">You became the reason<br />someone created one.</h2><div className="ending-rule" /><p className="ending-final">{birthdayConfig.finalMessage}.</p><Heart className="ending-heart" size={18} strokeWidth={1.2} />{revealed && <motion.p className="hidden-message" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>{birthdayConfig.hiddenMessage}</motion.p>}</div>
       <button className="again-button" type="button" onClick={onAgain}><Sparkles size={16} />Experience again</button>
+      <button className="reveal-button" type="button" onClick={() => setRevealed((value) => !value)} aria-expanded={revealed}><Gift size={15} />{revealed ? "Keep this little secret" : "One last little secret"}</button>
       <p className="ending-footer">made with intention · 09 / 09</p>
     </section>
   );
