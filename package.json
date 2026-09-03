@@ -1,8 +1,10 @@
 {
   "name": "birthday-surprise",
   "version": "1.0.0",
+  "description": "A cinematic, scroll-driven birthday gift experience — built with intention",
   "type": "module",
   "license": "MIT",
+  "author": "Pavithran S",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
