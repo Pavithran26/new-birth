@@ -30,6 +30,7 @@ It is an 8-scene emotional journey:
 - Soft ambient music (optional)
 - Reduced-motion support
 - Fully responsive + accessible
+- Beautiful Open Graph tags for sharing
 
 ---
 
@@ -96,6 +97,28 @@ That’s it. The entire experience updates automatically.
 
 ---
 
+## 🌐 Deploy
+
+### Vercel (Recommended)
+
+1. Push this repo to GitHub (already done)
+2. Go to [vercel.com](https://vercel.com) → New Project
+3. Import this repository
+4. Framework Preset: **Vite**
+5. Deploy
+
+Or use the CLI:
+
+```bash
+pnpm build
+npx vercel --prod
+```
+
+### Other platforms
+Any static host works after `pnpm build` (the `dist` folder + Express server if needed).
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -110,6 +133,7 @@ new-birth/
 │   └── public/
 ├── server/                 # Production Express server
 ├── shared/
+├── LICENSE
 └── package.json
 ```
 
